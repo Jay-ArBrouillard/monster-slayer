@@ -11,22 +11,71 @@ const app = Vue.createApp({
         return { 
             heroHp: 100,
             monsterHp: 100,
+            heroAccuracy: 100,
+            monsterAccuracy: 100,
+            heroAttackStyle: '',
+            monsterAttackStyle: '',
+            monsterAttackStyleOrder: ['ranged', 'melee', 'melee', 'mage'],
             currentRound: 0,
             usedSpecialAttack: false,
             battleLogs: []
         }
     },
     methods: {
-        attackHero() {
-            const monsterAttack = getRandomInRange(8, 15) 
-            this.heroHp -= monsterAttack
-            this.addLog('Monster', 'attacked', monsterAttack)
+        calculateAccuracy(attackType, otherAttackType) {
+            if (attackType === 'melee') {
+                if (otherAttackType === 'melee') {
+                    return 90;
+                } else if (otherAttackType=== 'ranged') {
+                    return 100;
+                } else {
+                    return 75;
+                }
+            } else if (attackType === 'ranged') {
+                if (otherAttackType === 'melee') {
+                    return 75;
+                } else if (otherAttackType === 'ranged') {
+                    return 90;
+                } else {
+                    return 100;
+                }
+            } else {
+                if (otherAttackType === 'melee') {
+                    return 100;
+                } else if (otherAttackType === 'ranged') {
+                    return 75;
+                } else {
+                    return 90;
+                }
+            }
         },
-        attackMonster() {
-            const heroAttack = getRandomInRange(8, 15) 
-            this.monsterHp -= heroAttack
-            if (this.usedSpecialAttack) this.currentRound++;
-            this.addLog('Hero', 'attacked', heroAttack)
+        attackHero() {
+            const accuracy = this.calculateAccuracy(this.monsterAttackStyle, this.heroAttackStyle)
+            const hit = accuracy >= getRandomInRange(1, 100)
+            if (hit) {
+                const monsterAttack = getRandomInRange(8, 15) 
+                this.heroHp -= monsterAttack
+                this.addLog('Monster', `${this.monsterAttackStyle} attacks`, monsterAttack)
+            } else {
+                this.addLog('Monster', `missed ${this.monsterAttackStyle} attack`, null)
+            }
+
+            this.monsterAttackStyleOrder.push(this.monsterAttackStyleOrder.shift()) //rotate array
+            this.monsterAttackStyle = this.monsterAttackStyleOrder[3]
+        },
+        attackMonster(type) {
+            this.heroAttackStyle = type
+            this.monsterAttackStyle = this.monsterAttackStyleOrder[0]
+            const accuracy = this.calculateAccuracy(this.heroAttackStyle, this.monsterAttackStyle)
+            const hit = accuracy >= getRandomInRange(1, 100)
+            if (hit) {
+                const heroAttack = getRandomInRange(8, 15) 
+                this.monsterHp -= heroAttack
+                if (this.usedSpecialAttack) this.currentRound++;
+                this.addLog('Hero', `${this.heroAttackStyle} attacks`, heroAttack)
+            } else {
+                this.addLog('Hero', `missed ${this.heroAttackStyle} attack`, null)
+            }
             this.attackHero()
         },
         specialAttackMonster() {
@@ -54,7 +103,8 @@ const app = Vue.createApp({
             this.monsterHp = 100;
             this.currentRound = 0;
             this.usedSpecialAttack = false;
-            this.battleLogs = []
+            this.monsterAttackStyle = 'ranged';
+            this.battleLogs = [];
         },
         surrender() {
             this.heroHp = 0;
@@ -90,6 +140,18 @@ const app = Vue.createApp({
         },
         gameOver() {
             return this.heroHp <= 0 || this.monsterHp <= 0
+        },
+        monsterIcon() {
+            if (this.monsterAttackStyle === 'ranged') return 'assets/bowman.png'
+            else if (this.monsterAttackStyle === 'mage') return 'assets/lunar-wand.png'
+            else if (this.monsterAttackStyle === 'melee') return 'assets/swordman.png'
+            else return 'assets/uncertainty.png'
+        },
+        heroIcon() {
+            if (this.heroAttackStyle === 'ranged') return 'assets/bowman.png'
+            else if (this.heroAttackStyle === 'mage') return 'assets/lunar-wand.png'
+            else if (this.heroAttackStyle === 'melee') return 'assets/swordman.png'
+            else return 'assets/uncertainty.png'
         }
     }
 });

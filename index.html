@@ -18,19 +18,21 @@
     </header>
     <div id="game">
       <section id="monster" class="container">
-        <h2>Monster Health</h2>
+        <h2>Monster Health <img class="attackStyle" :src="monsterIcon" alt="?"></h2>
         <div class="healthbar">
           <div class="healthbar__value" :style="monsterHealthBarValue"></div>
         </div>
       </section>
       <section id="player" class="container">
-        <h2>Your Health</h2>
+        <h2>Your Health <img class="attackStyle" :src="heroIcon" alt="?"></h2>
         <div class="healthbar">
           <div class="healthbar__value" :style="heroHealthBarValue"></div>
         </div>
       </section>
       <section id="controls" v-if="gameOver === false">
-        <button @click="attackMonster">ATTACK</button>
+        <button @click="attackMonster('melee')">MELEE ATTACK</button>
+        <button @click="attackMonster('ranged')">RANGE ATTACK</button>
+        <button @click="attackMonster('mage')">MAGE ATTACK</button>
         <button @click="specialAttackMonster" :disabled="specialAttackOnCooldown">SPECIAL ATTACK</button>
         <button @click="heal">HEAL</button>
         <button @click="surrender">SURRENDER</button>
@@ -49,8 +51,9 @@
             <span :class="{'log--player': log.who === 'Hero', 'log--monster': log.who === 'Monster'}">{{ log.who === 'Hero' ? 'Hero' : 'Monster' }}</span>
             <span v-if="log.what === 'heal'"> heals himself for <span class="log--heal">{{ log.amount }}</span></span>
             <span v-else-if="log.what === 'fullHeal'"> fully heals to <span class="log--heal">100</span></span>
-            <span v-else-if="log.what.includes('special')"> special attacks and deals <span class="log--special">{{ log.amount }}</span></span>
-            <span v-else> attacks and deals <span class="log--damage">{{ log.amount }}</span></span>
+            <span v-else-if="log.what.includes('special')">: {{ log.what }} and deals <span class="log--special">{{ log.amount }}</span></span>
+            <span v-else-if="log.what.includes('missed')">: {{ log.what }} </span>
+            <span v-else>: {{ log.what }} and deals <span class="log--damage">{{ log.amount }}</span></span>
           </li>
         </ul>
       </section>

@@ -52,23 +52,29 @@ section {
   margin: 0.25rem;
 }
 
-#controls {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+.attackStyle {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #575757;
+  border-radius: 5px;
   align-items: center;
-  justify-content: center;
+}
+
+#controls {
+  width: 50%;
+  left: 25%;
+  bottom: 5px;
 }
 
 button {
   font: inherit;
+  width: 30%;
+  margin: 1%;
+  height: 100%;
   border: 1px solid #88005b;
-  background-color: #88005b;
   color: white;
-  padding: 1rem 2rem;
+  background-color: #88005b;
   border-radius: 12px;
-  margin: 1rem;
-  width: 12rem;
   cursor: pointer;
   box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.26);
 }

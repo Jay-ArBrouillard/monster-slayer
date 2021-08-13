@@ -68,15 +68,18 @@ section {
 
 button {
   font: inherit;
-  width: 30%;
+  display:inline-block;
+  padding:0.35em 1.2em;
+  border:0.1em solid #FFFFFF;
   margin: 1%;
-  height: 100%;
-  border: 1px solid #88005b;
+  border-radius: 12px;
+  box-sizing: border-box;
   color: white;
   background-color: #88005b;
-  border-radius: 12px;
+  text-align: center;
+  transition: all 0.2s;
   cursor: pointer;
-  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.26);
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.26); 
 }
 
 button:focus {

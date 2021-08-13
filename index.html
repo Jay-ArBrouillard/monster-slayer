@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vue Basics</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://unpkg.com/vue@next" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Monster Slayer</h1>
+    </header>
+    <div id="game">
+      <section id="monster" class="container">
+        <h2>Monster Health</h2>
+        <div class="healthbar">
+          <div class="healthbar__value" :style="monsterHealthBarValue"></div>
+        </div>
+      </section>
+      <section id="player" class="container">
+        <h2>Your Health</h2>
+        <div class="healthbar">
+          <div class="healthbar__value" :style="heroHealthBarValue"></div>
+        </div>
+      </section>
+      <section id="controls" v-if="gameOver === false">
+        <button @click="attackMonster">ATTACK</button>
+        <button @click="specialAttackMonster" :disabled="specialAttackOnCooldown">SPECIAL ATTACK</button>
+        <button @click="heal">HEAL</button>
+        <button @click="surrender">SURRENDER</button>
+      </section>
+      <section class="container" v-else>
+        <h2>Game Over</h2>
+        <p v-if="heroHp <= 0 && monsterHp <= 0">It's a draw!</p>
+        <p v-else-if="heroHp <= 0">Monster wins!</p>
+        <p v-else>Hero wins!</p>
+        <button @click="reset">New Game?</button>
+      </section>
+      <section id="log" class="container">
+        <h2>Battle Log</h2>
+        <ul>
+          <li :key="log" v-for="log in battleLogs">
+            <span :class="{'log--player': log.who === 'Hero', 'log--monster': log.who === 'Monster'}">{{ log.who === 'Hero' ? 'Hero' : 'Monster' }}</span>
+            <span v-if="log.what === 'heal'"> heals himself for <span class="log--heal">{{ log.amount }}</span></span>
+            <span v-else-if="log.what === 'fullHeal'"> fully heals to <span class="log--heal">100</span></span>
+            <span v-else-if="log.what.includes('special')"> special attacks and deals <span class="log--special">{{ log.amount }}</span></span>
+            <span v-else> attacks and deals <span class="log--damage">{{ log.amount }}</span></span>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </body>
+</html>

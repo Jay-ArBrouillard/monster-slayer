@@ -83,7 +83,7 @@ const app = Vue.createApp({
             if (hit) {
                 let heroAttack = getRandomInRange(8, 15) 
                 //Boost attack
-                if (accuracy === 100) heroAttack = Math.ceil(heroAttack * 2)
+                if (accuracy === 100) heroAttack = Math.ceil(heroAttack * 1.5)
                 this.goblin.monsterHp -= heroAttack
                 if (this.usedSpecialAttack) this.currentRound++;
                 this.addLog('Hero', 'attack', `${this.heroAttackStyle} attacked and dealt`, heroAttack)

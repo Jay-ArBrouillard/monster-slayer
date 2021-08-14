@@ -19,6 +19,7 @@
     <div id="game">
       <section id="monster" class="container">
         <div class="attackStyleContainer">
+          <img class="goblin" src="assets/goblin-head.png" alt="Goblin Image">
           <h2 style="padding-top: 10px;">Goblin Health</h2>
           <div> 
             <h6 style="margin: unset">Attack Style</h6>
@@ -51,8 +52,8 @@
       </section>
       <section class="container" v-else>
         <h2>Game Over</h2>
-        <p v-if="heroHp <= 0 && monsterHp <= 0">It's a draw!</p>
-        <p v-else-if="heroHp <= 0">Monster wins!</p>
+        <p v-if="hero.heroHp <= 0 && goblin.monsterHp <= 0">It's a draw!</p>
+        <p v-else-if="hero.heroHp <= 0">Monster wins!</p>
         <p v-else>Hero wins!</p>
         <button @click="reset">New Game?</button>
       </section>

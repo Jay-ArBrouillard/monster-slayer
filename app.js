@@ -9,8 +9,6 @@ function getRandomInRange(min, max) {
 const app = Vue.createApp({
     data() {
         return { 
-            heroHp: 100,
-            monsterHp: 100,
             heroAccuracy: 100,
             monsterAccuracy: 100,
             heroAttackStyle: '',
@@ -18,7 +16,20 @@ const app = Vue.createApp({
             monsterAttackStyleOrder: ['ranged', 'melee', 'melee', 'mage'],
             currentRound: 0,
             usedSpecialAttack: false,
-            battleLogs: []
+            battleLogs: [],
+
+            hero: {
+                name: 'Hero',
+                heroHp: 100,
+                maxHp: 100,
+                strength: 5
+            },
+            goblin: {
+                name: 'Goblin',
+                monsterHp: 200,
+                maxHp: 200,
+                strength: 10
+            }
         }
     },
     methods: {
@@ -53,8 +64,8 @@ const app = Vue.createApp({
             const accuracy = this.calculateAccuracy(this.monsterAttackStyle, this.heroAttackStyle)
             const hit = accuracy >= getRandomInRange(1, 100)
             if (hit) {
-                const monsterAttack = getRandomInRange(8, 15) 
-                this.heroHp -= monsterAttack
+                const monsterAttack = getRandomInRange(6, 12) 
+                this.hero.heroHp -= monsterAttack
                 this.addLog('Monster', `${this.monsterAttackStyle} attacks`, monsterAttack)
             } else {
                 this.addLog('Monster', `missed ${this.monsterAttackStyle} attack`, null)
@@ -70,7 +81,7 @@ const app = Vue.createApp({
             const hit = accuracy >= getRandomInRange(1, 100)
             if (hit) {
                 const heroAttack = getRandomInRange(8, 15) 
-                this.monsterHp -= heroAttack
+                this.goblin.monsterHp -= heroAttack
                 if (this.usedSpecialAttack) this.currentRound++;
                 this.addLog('Hero', `${this.heroAttackStyle} attacks`, heroAttack)
             } else {
@@ -80,7 +91,7 @@ const app = Vue.createApp({
         },
         specialAttackMonster() {
             const heroSpecialAttack = getRandomInRange(12, 25) 
-            this.monsterHp -= heroSpecialAttack
+            this.goblin.monsterHp -= heroSpecialAttack
             this.usedSpecialAttack = true
             this.currentRound++;
             this.addLog('Hero', 'special attacked', heroSpecialAttack)
@@ -88,26 +99,27 @@ const app = Vue.createApp({
         },
         heal() {
             const healValue = getRandomInRange(3, 20)
-            if (healValue + this.heroHp > 100) {
-                this.heroHp = 100
+            if (healValue + this.hero.heroHp > 100) {
+                this.goblin.heroHp = 100
                 this.addLog('Hero', 'fullHeal', healValue)
             } else {
-                this.heroHp += healValue
+                this.goblin.heroHp += healValue
                 this.addLog('Hero', 'heal', healValue)
             }
             if (this.usedSpecialAttack) this.currentRound++;
             this.attackHero()
         },
         reset() {
-            this.heroHp = 100;
-            this.monsterHp = 100;
+            this.hero.heroHp = this.hero.maxHp;
+            this.goblin.monsterHp = this.goblin.maxHp;
             this.currentRound = 0;
             this.usedSpecialAttack = false;
             this.monsterAttackStyle = 'ranged';
+            this.monsterAttackStyleOrder = ['ranged', 'melee', 'melee', 'mage'],
             this.battleLogs = [];
         },
         surrender() {
-            this.heroHp = 0;
+            this.hero.heroHp = 0;
             this.battleLogs = []
         },
         addLog(who, what, amount) {
@@ -120,26 +132,26 @@ const app = Vue.createApp({
     },
     computed: {
         monsterHealthBarValue() {
-            if (this.monsterHp < 0) {
+            if (this.goblin.monsterHp < 0) {
                 return {width: '0%'}
             }
             return { 
-                width: `${this.monsterHp}%`
+                width: `${Math.floor(this.goblin.monsterHp / this.goblin.maxHp * 100)}%`
             }
         },
         heroHealthBarValue() {
-            if (this.heroHp < 0) {
+            if (this.hero.heroHp < 0) {
                 return {width: '0%'}
             }
             return { 
-                width: `${this.heroHp}%`
+                width: `${this.hero.heroHp}%`
             }
         }, 
         specialAttackOnCooldown() {
             return this.currentRound % 3 !== 0;
         },
         gameOver() {
-            return this.heroHp <= 0 || this.monsterHp <= 0
+            return this.hero.heroHp <= 0 || this.goblin.monsterHp <= 0
         },
         monsterIcon() {
             if (this.monsterAttackStyle === 'ranged') return 'assets/bowman.png'

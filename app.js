@@ -17,7 +17,8 @@ const app = Vue.createApp({
             currentRound: 0,
             usedSpecialAttack: false,
             battleLogs: [],
-
+            monsterStunnedCountDown: 0,
+            idCounter: 0,
             hero: {
                 name: 'Hero',
                 heroHp: 100,
@@ -61,18 +62,18 @@ const app = Vue.createApp({
             }
         },
         attackHero() {
-            const accuracy = this.calculateAccuracy(this.monsterAttackStyle, this.heroAttackStyle)
-            const hit = accuracy >= getRandomInRange(1, 100)
-            if (hit) {
+            if (this.monsterStunnedCountDown > 0) {
+                this.monsterStunnedCountDown--;
+                this.addLog('Monster', 'stunned', `stunned for ${this.monsterStunnedCountDown} more turn(s)`)
+            } else {
+                //Monster will always have 100% accuracy
                 const monsterAttack = getRandomInRange(6, 12) 
                 this.hero.heroHp -= monsterAttack
-                this.addLog('Monster', `${this.monsterAttackStyle} attacks`, monsterAttack)
-            } else {
-                this.addLog('Monster', `missed ${this.monsterAttackStyle} attack`, null)
-            }
+                this.addLog('Monster', 'attack', `${this.monsterAttackStyle} attacked and dealt`, monsterAttack)
 
-            this.monsterAttackStyleOrder.push(this.monsterAttackStyleOrder.shift()) //rotate array
-            this.monsterAttackStyle = this.monsterAttackStyleOrder[3]
+                this.monsterAttackStyleOrder.push(this.monsterAttackStyleOrder.shift()) //rotate array
+                this.monsterAttackStyle = this.monsterAttackStyleOrder[3]
+            }
         },
         attackMonster(type) {
             this.heroAttackStyle = type
@@ -80,12 +81,14 @@ const app = Vue.createApp({
             const accuracy = this.calculateAccuracy(this.heroAttackStyle, this.monsterAttackStyle)
             const hit = accuracy >= getRandomInRange(1, 100)
             if (hit) {
-                const heroAttack = getRandomInRange(8, 15) 
+                let heroAttack = getRandomInRange(8, 15) 
+                //Boost attack
+                if (accuracy === 100) heroAttack = Math.ceil(heroAttack * 2)
                 this.goblin.monsterHp -= heroAttack
                 if (this.usedSpecialAttack) this.currentRound++;
-                this.addLog('Hero', `${this.heroAttackStyle} attacks`, heroAttack)
+                this.addLog('Hero', 'attack', `${this.heroAttackStyle} attacked and dealt`, heroAttack)
             } else {
-                this.addLog('Hero', `missed ${this.heroAttackStyle} attack`, null)
+                this.addLog('Hero', 'miss', `attempted ${this.heroAttackStyle} attack and missed`)
             }
             this.attackHero()
         },
@@ -94,24 +97,35 @@ const app = Vue.createApp({
             this.goblin.monsterHp -= heroSpecialAttack
             this.usedSpecialAttack = true
             this.currentRound++;
-            this.addLog('Hero', 'special attacked', heroSpecialAttack)
+            this.addLog('Hero', 'special', 'special attacked and deals', heroSpecialAttack)
             this.attackHero()
         },
         heal() {
             const healValue = getRandomInRange(3, 20)
             if (healValue + this.hero.heroHp > 100) {
                 this.goblin.heroHp = 100
-                this.addLog('Hero', 'fullHeal', healValue)
+                this.addLog('Hero', 'fullHeal', 'fully heals to', healValue)
             } else {
                 this.goblin.heroHp += healValue
-                this.addLog('Hero', 'heal', healValue)
+                this.addLog('Hero', 'heal', 'heals himself for', healValue)
             }
             if (this.usedSpecialAttack) this.currentRound++;
             this.attackHero()
         },
+        stun() {
+            const stun = getRandomInRange(1, 2)
+            if (stun === 2) {
+                this.monsterStunnedCountDown = 2
+                this.addLog('Monster', 'stun', `successfully stunned Monster for ${this.monsterStunnedCountDown} turn(s)`)
+            } else {
+                this.addLog('Monster', 'stunFail', 'attempted to stun Monster and failed')
+                this.attackHero()
+            }
+        },
         reset() {
             this.hero.heroHp = this.hero.maxHp;
             this.goblin.monsterHp = this.goblin.maxHp;
+            this.goblin.stun = false;
             this.currentRound = 0;
             this.usedSpecialAttack = false;
             this.monsterAttackStyle = 'ranged';
@@ -122,12 +136,14 @@ const app = Vue.createApp({
             this.hero.heroHp = 0;
             this.battleLogs = []
         },
-        addLog(who, what, amount) {
+        addLog(who, what, message, amount) {
             this.battleLogs.unshift({
                 who,
                 what,
+                message, 
                 amount
             });
+            this.idCounter++;
         }
     },
     computed: {

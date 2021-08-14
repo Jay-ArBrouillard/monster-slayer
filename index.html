@@ -48,6 +48,7 @@
         <button @click="attackMonster('mage')">MAGE ATTACK</button>
         <button @click="specialAttackMonster" :disabled="specialAttackOnCooldown">SPECIAL ATTACK</button>
         <button @click="heal">HEAL</button>
+        <button @click="stun" :disabled="monsterStunnedCountDown > 0">STUN</button>
         <button @click="surrender">SURRENDER</button>
       </section>
       <section class="container" v-else>
@@ -61,12 +62,15 @@
         <h2>Battle Log</h2>
         <ul>
           <li :key="log" v-for="log in battleLogs">
-            <span :class="{'log--player': log.who === 'Hero', 'log--monster': log.who === 'Monster'}">{{ log.who === 'Hero' ? 'Hero' : 'Monster' }}</span>
-            <span v-if="log.what === 'heal'"> heals himself for <span class="log--heal">{{ log.amount }}</span></span>
-            <span v-else-if="log.what === 'fullHeal'"> fully heals to <span class="log--heal">100</span></span>
-            <span v-else-if="log.what.includes('special')">: {{ log.what }} and deals <span class="log--special">{{ log.amount }}</span></span>
-            <span v-else-if="log.what.includes('missed')">: {{ log.what }} </span>
-            <span v-else>: {{ log.what }} and deals <span class="log--damage">{{ log.amount }}</span></span>
+            <span :class="{'log--player': log.who === 'Hero', 'log--monster': log.who === 'Monster'}">{{ log.who }}: </span>
+            <span v-if="log.what === 'heal'">{{ log.message }} <span class="log--heal">{{ log.amount }}</span></span>
+            <span v-else-if="log.what === 'fullHeal'">{{ log.message }} <span class="log--heal">100</span></span>
+            <span v-else-if="log.what === 'special'">{{ log.message }} <span class="log--special">{{ log.amount }}</span></span>
+            <span v-else-if="log.what === 'miss'">{{ log.message }}</span>
+            <span v-else-if="log.what === 'stun'">{{ log.message }}</span>
+            <span v-else-if="log.what === 'stunFail'">{{ log.message }}</span>
+            <span v-else-if="log.what === 'stunned'">{{ log.message }}</span>
+            <span v-else-if="log.what === 'attack'">{{ log.message }} <span class="log--damage">{{ log.amount }}</span></span>
           </li>
         </ul>
       </section>

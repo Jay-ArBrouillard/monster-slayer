@@ -7,6 +7,18 @@ function getRandomInRange(min, max) {
 }
 
 const app = Vue.createApp({
+    mounted: function () {
+        // Heal Monster if his heal is low enough
+        window.setInterval(() => {
+            if (this.goblin.monsterHp <= 30) {
+                if (this.goblin.monsterHp + 1 > this.goblin.maxHp) {
+                    this.goblin.monsterHp = this.goblin.maxHp
+                } else {
+                    this.goblin.monsterHp += 1
+                }
+            }
+        }, 2000)
+    },
     data() {
         return { 
             heroAccuracy: 100,

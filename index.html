@@ -18,13 +18,25 @@
     </header>
     <div id="game">
       <section id="monster" class="container">
-        <h2>Monster Health <img class="attackStyle" :src="monsterIcon" alt="?"></h2>
+        <div class="attackStyleContainer">
+          <h2 style="padding-top: 10px;">Goblin Health</h2>
+          <div> 
+            <h6 style="margin: unset">Attack Style</h6>
+            <img class="attackStyle" :src="monsterIcon" alt="?">
+          </div>
+        </div>
         <div class="healthbar">
           <div class="healthbar__value" :style="monsterHealthBarValue"></div>
         </div>
       </section>
       <section id="player" class="container">
-        <h2>Your Health <img class="attackStyle" :src="heroIcon" alt="?"></h2>
+        <div class="attackStyleContainer">
+          <h2 style="padding-top: 10px;">Your Health</h2>
+          <div> 
+            <h6 style="margin: unset">Attack Style</h6>
+            <img class="attackStyle" :src="heroIcon" alt="?">
+          </div>
+        </div>
         <div class="healthbar">
           <div class="healthbar__value" :style="heroHealthBarValue"></div>
         </div>

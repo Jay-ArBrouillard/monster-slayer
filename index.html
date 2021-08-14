@@ -17,6 +17,14 @@
       <h1>Monster Slayer</h1>
     </header>
     <div id="game">
+      <section>
+      <button @click="toggleRules = !toggleRules">{{ toggleRules ? "Hide Rules" : "Show Rules" }}</button>
+      </section>
+      <section v-if="toggleRules">
+        <p>How to play: Use the buttons to interact. The Monster may change attack styles. Keep in mind the combat triangle: Melee is strong against Range, Range is strong against Mage,
+          and Mage is strong against Melee.
+        </p>
+      </section>
       <section id="monster" class="container">
         <div class="attackStyleContainer">
           <img class="goblin" src="assets/goblin-head.png" alt="Goblin Image">

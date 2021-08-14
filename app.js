@@ -10,7 +10,7 @@ const app = Vue.createApp({
     mounted: function () {
         // Heal Monster if his heal is low enough
         window.setInterval(() => {
-            if (this.goblin.monsterHp <= 30) {
+            if (this.goblin.monsterHp <= Math.floor(this.goblin.maxHp / 4)) {
                 if (this.goblin.monsterHp + 1 > this.goblin.maxHp) {
                     this.goblin.monsterHp = this.goblin.maxHp
                 } else {
@@ -21,6 +21,7 @@ const app = Vue.createApp({
     },
     data() {
         return { 
+            toggleRules: false,
             heroAccuracy: 100,
             monsterAccuracy: 100,
             heroAttackStyle: '',

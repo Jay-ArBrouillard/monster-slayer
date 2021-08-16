@@ -26,28 +26,44 @@
         </p>
       </section>
       <section id="monster" class="container">
-        <div class="attackStyleContainer">
-          <img class="goblin" src="assets/goblin-head.png" alt="Goblin Image">
-          <h2 style="padding-top: 10px;">Goblin Health</h2>
-          <div> 
-            <h6 style="margin: unset">Attack Style</h6>
-            <img class="attackStyle" :src="monsterIcon" alt="?">
+        <div class="flexbox-container">
+          <div class="flexbox-item flexbox-item-1">
+            <div> 
+              <p style="margin: 2px">Attack Style</p>
+              <img class="attackStyle" :src="monsterIcon" alt="?">
+            </div>
+          </div>
+          <div class="flexbox-item flexbox-item-2">
+            <img class="goblin" src="assets/goblin-head.png" alt="Goblin Image">
+            <h2>Goblin</h2>
+          </div>
+          <div class="flexbox-item flexbox-item-3">
+            <p>{{ monsterHealthBarValue}} / {{ goblin.maxHp }}</p>
+            <p style="font-size: small;">Str: {{ goblin.strength }}</p>
           </div>
         </div>
         <div class="healthbar">
-          <div class="healthbar__value" :style="monsterHealthBarValue"></div>
+          <div class="healthbar__value" :style="monsterHealthBarStyle"></div>
         </div>
       </section>
       <section id="player" class="container">
-        <div class="attackStyleContainer">
-          <h2 style="padding-top: 10px;">Your Health</h2>
-          <div> 
-            <h6 style="margin: unset">Attack Style</h6>
-            <img class="attackStyle" :src="heroIcon" alt="?">
+        <div class="flexbox-container">
+          <div class="flexbox-item flexbox-item-1">
+            <div> 
+              <p style="margin: 2px">Attack Style</p>
+              <img class="attackStyle" :src="heroIcon" alt="?">
+            </div>
+          </div>
+          <div class="flexbox-item flexbox-item-2">
+            <h2>Hero</h2>
+          </div>
+          <div class="flexbox-item flexbox-item-3">
+            <p>{{ heroHealthBarValue }} / {{ hero.maxHp }}</p>
+            <p style="font-size: small;">Str: {{ hero.strength }}</p>
           </div>
         </div>
         <div class="healthbar">
-          <div class="healthbar__value" :style="heroHealthBarValue"></div>
+          <div class="healthbar__value" :style="heroHealthBarStyle"></div>
         </div>
       </section>
       <section id="controls" v-if="gameOver === false">

@@ -60,21 +60,32 @@ section {
   border-radius: 5px;
 }
 
-.attackStyleContainer {
-  width: 100%;
+.flexbox-container {
   display: flex;
-  flex-direction: row;
   justify-content: center;
+  align-items: center;
+}
+
+.flexbox-item {
+  min-width: 200px;
+  font-size: x-large;
+}
+
+.flexbox-item-1 {
+  font-size: medium;
+}
+
+.flexbox-item-2 {
+}
+
+.flexbox-item-3 {
 }
 
 .attackStyle {
-  width: 40px;
-  height: 40px;
-  border: 2px solid #575757;
+  width: 35%;
+  height: 35%;
   border-radius: 5px;
   display: inline-block;
-  margin: 0px;
-  padding: 0px;
 }
 
 #controls {

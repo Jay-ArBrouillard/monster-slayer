@@ -17,7 +17,7 @@ const app = Vue.createApp({
                     this.goblin.monsterHp += 1
                 }
             }
-        }, 2000)
+        }, 500)
     },
     data() {
         return { 
@@ -82,7 +82,6 @@ const app = Vue.createApp({
                 //Monster will always have 100% accuracy
                 let monsterAttack = getRandomInRange(6, 12) 
                 //If you fail a stun, then monster will counter attack for big damage
-                console.log(this.battleLogs[0].message === 'attempted to stun Monster and failed')
                 if (this.battleLogs[0].message === 'attempted to stun Monster and failed') {
                     monsterAttack *= 2.5
                     this.addLog('Monster', 'attack', `${this.monsterAttackStyle} counter attacked and dealt`, monsterAttack)

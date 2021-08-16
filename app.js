@@ -6,19 +6,15 @@ function getRandomInRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function wait(ms) {
+    var start = Date.now(),
+        now = start;
+    while (now - start < ms) {
+      now = Date.now();
+    }
+}
+
 const app = Vue.createApp({
-    mounted: function () {
-        // Heal Monster if his heal is low enough
-        window.setInterval(() => {
-            if (this.goblin.monsterHp > 0 && this.goblin.monsterHp <= Math.floor(this.goblin.maxHp / 4)) {
-                if (this.goblin.monsterHp + 1 > this.goblin.maxHp) {
-                    this.goblin.monsterHp = this.goblin.maxHp
-                } else {
-                    this.goblin.monsterHp += 1
-                }
-            }
-        }, 500)
-    },
     data() {
         return { 
             toggleRules: false,
@@ -83,7 +79,7 @@ const app = Vue.createApp({
                 let monsterAttack = getRandomInRange(this.goblin.strength, this.goblin.strength * 2) 
                 //If you fail a stun, then monster will counter attack for big damage
                 if (this.battleLogs[0].message === 'attempted to stun Monster and failed') {
-                    monsterAttack *= 2.5
+                    monsterAttack = Math.ceil(monsterAttack * 2.5)
                     this.addLog('Monster', 'attack', `${this.monsterAttackStyle} counter attacked and dealt`, monsterAttack)
                 } else {
                     this.addLog('Monster', 'attack', `${this.monsterAttackStyle} attacked and dealt`, monsterAttack)
@@ -120,7 +116,7 @@ const app = Vue.createApp({
             this.attackHero()
         },
         heal() {
-            const healValue = getRandomInRange(3, 20)
+            const healValue = getRandomInRange(1, 20)
             if (healValue + this.hero.heroHp > 100) {
                 this.hero.heroHp = 100
                 this.addLog('Hero', 'fullHeal', 'fully heals to', healValue)
@@ -212,6 +208,18 @@ const app = Vue.createApp({
             else if (this.heroAttackStyle === 'melee') return 'assets/swordman.png'
             else return 'assets/uncertainty.png'
         }
+    },
+    mounted: function () {
+        // Heal Monster if his heal is low enough
+        window.setInterval(() => {
+            if (this.goblin.monsterHp > 0 && this.goblin.monsterHp <= Math.floor(this.goblin.maxHp / 4)) {
+                if (this.goblin.monsterHp + 1 > this.goblin.maxHp) {
+                    this.goblin.monsterHp = this.goblin.maxHp
+                } else {
+                    this.goblin.monsterHp += 1
+                }
+            }
+        }, 500)
     }
 });
 

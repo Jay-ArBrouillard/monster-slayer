@@ -80,9 +80,16 @@ const app = Vue.createApp({
                 this.addLog('Monster', 'stunned', `stunned for ${this.monsterStunnedCountDown} more turn(s)`)
             } else {
                 //Monster will always have 100% accuracy
-                const monsterAttack = getRandomInRange(6, 12) 
+                let monsterAttack = getRandomInRange(6, 12) 
+                //If you fail a stun, then monster will counter attack for big damage
+                console.log(this.battleLogs[0].message === 'attempted to stun Monster and failed')
+                if (this.battleLogs[0].message === 'attempted to stun Monster and failed') {
+                    monsterAttack *= 2.5
+                    this.addLog('Monster', 'attack', `${this.monsterAttackStyle} counter attacked and dealt`, monsterAttack)
+                } else {
+                    this.addLog('Monster', 'attack', `${this.monsterAttackStyle} attacked and dealt`, monsterAttack)
+                }
                 this.hero.heroHp -= monsterAttack
-                this.addLog('Monster', 'attack', `${this.monsterAttackStyle} attacked and dealt`, monsterAttack)
 
                 this.monsterAttackStyleOrder.push(this.monsterAttackStyleOrder.shift()) //rotate array
                 this.monsterAttackStyle = this.monsterAttackStyleOrder[3]

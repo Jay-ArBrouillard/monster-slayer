@@ -177,8 +177,8 @@ const app = Vue.createApp({
             this.attackHero()
         },
         heal() {
-            const missingHP = Math.ceil((this.hero.maxHp - this.hero.heroHp) * 0.5)
-            const healValue = round(getRandomNumberBetween(1, missingHP))
+            const fiftyPercentMissingHP = (this.hero.maxHp - this.hero.heroHp) * 0.5
+            const healValue = round(getRandomNumberBetween(1, fiftyPercentMissingHP))
             if (healValue + this.hero.heroHp > 100) {
                 this.hero.heroHp = this.hero.maxHp
                 this.addLog('Hero', 'fullHeal', 'heals to full', healValue)
@@ -288,6 +288,18 @@ const app = Vue.createApp({
             else if (this.heroAttackStyle === 'mage') return 'assets/lunar-wand.png'
             else if (this.heroAttackStyle === 'melee') return 'assets/swordman.png'
             else return 'assets/uncertainty.png'
+        },
+        monsterMaxHit() {
+            return round(this.currentMonster.strength * 2.1)
+        },
+        monsterMaxCounterHit() {
+            return round(round(Math.ceil(this.currentMonster.strength * 2) * 1.1) * 2.5)
+        },
+        heroMaxHeal() {
+            return round(Math.ceil((this.hero.maxHp - this.hero.heroHp) * 0.5))
+        },
+        heroMaxHit() {
+            return this.specialAttackOnCooldown ? round(this.hero.strength * 2.1) : round(Math.max(this.specialAttackMaxHit, this.hero.strength * 2.1)) 
         }
     },
     mounted: function () {

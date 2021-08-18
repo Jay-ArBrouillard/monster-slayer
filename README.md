@@ -1,6 +1,6 @@
 # monster-slayer
 Gameplay
-![alt text](https://github.com/Jay-ArBrouillard/monster-slayer/blob/main/monster-slayer-demo.png)
+![gif](https://github.com/Jay-ArBrouillard/monster-slayer/blob/main/monster-slayer-demo.png)
 
-Beat my highscore!
+Beat my highscore! 3094.7
 ![alt text](https://github.com/Jay-ArBrouillard/monster-slayer/blob/main/hiscore.png)

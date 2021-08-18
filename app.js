@@ -75,6 +75,11 @@ const app = Vue.createApp({
                 accuracy: 20
             },
             currentMonster: '',
+            //Used for scoring
+            randomEventCount: 0,
+            killedGoblinIdx: 0,
+            killedBarbarianIdx: 0,
+            killedDraculaIdx: 0,
         }
     },
     methods: {
@@ -161,9 +166,18 @@ const app = Vue.createApp({
             if (this.currentMonster.monsterHp <= 0) {
                 this.addLog('Hero', 'kill', `slain ${this.currentMonster.name}. Round ${this.currentRound} completed`)
                 this.currentRound++
-                if (this.currentRound === 2) this.currentMonster = this.barbarian
-                else if (this.currentRound === 3) this.currentMonster = this.dracula
-                else this.currentMonster = this.rex
+                if (this.currentRound === 2) {
+                    this.currentMonster = this.barbarian
+                    this.killedGoblinIdx = this.battleLogs.length - this.randomEventCount
+                }
+                else if (this.currentRound === 3) {
+                    this.currentMonster = this.dracula
+                    this.killedBarbarianIdx = this.battleLogs.length - this.randomEventCount
+                }
+                else {
+                    this.currentMonster = this.rex
+                    this.killedDraculaIdx = this.battleLogs.length - this.randomEventCount
+                } 
             } else {
                 this.attackHero()
             }
@@ -178,9 +192,18 @@ const app = Vue.createApp({
             if (this.currentMonster.monsterHp <= 0) {
                 this.addLog('Hero', 'kill', `slain ${this.currentMonster.name}. Round ${this.currentRound} completed`)
                 this.currentRound++
-                if (this.currentRound === 2) this.currentMonster = this.barbarian
-                else if (this.currentRound === 3) this.currentMonster = this.dracula
-                else this.currentMonster = this.rex
+                if (this.currentRound === 2) {
+                    this.currentMonster = this.barbarian
+                    this.killedGoblinIdx = this.battleLogs.length - this.randomEventCount
+                }
+                else if (this.currentRound === 3) {
+                    this.currentMonster = this.dracula
+                    this.killedBarbarianIdx = this.battleLogs.length - this.randomEventCount
+                }
+                else {
+                    this.currentMonster = this.rex
+                    this.killedDraculaIdx = this.battleLogs.length - this.randomEventCount
+                } 
             } else {
                 this.attackHero()
             }
@@ -245,6 +268,10 @@ const app = Vue.createApp({
             this.specialAttackMinHit = 16
             this.specialAttackMaxHit = 24
             this.healCount = 10
+            this.randomEventCount = 0
+            this.killedGoblinIdx = 0
+            this.killedBarbarianIdx = 0
+            this.killedDraculaIdx = 0
         },
         surrender() {
             this.hero.heroHp = 0;
@@ -328,6 +355,55 @@ const app = Vue.createApp({
         },
         heroMaxHit() {
             return this.specialAttackOnCooldown ? round(this.hero.strength * 2.5) : round(Math.max(this.specialAttackMaxHit, this.hero.strength * 2.5)) 
+        },
+        gameScore() {
+            let score = 0
+            if (this.currentRound === 1) {
+                score += 200
+            } else if (this.currentRound === 2) {
+                score += 400
+            } else if (this.currentRound === 3) {
+                score += 800
+            } else if (this.currentRound === 4) {
+                score += 1600
+            } else if (this.currentRound === 5) {
+                score += 3200
+            }
+            // Add points for amount of healcount left
+            score += this.healCount * 5
+            // Add points for amount of hp left
+            score += Math.max(0, this.hero.heroHp)
+            // Add points for damage dealt to the current Monster
+            score += this.currentMonster.maxHp - this.currentMonster.monsterHp
+            // Add/Subtract points for each strong and weak attack Hero performed
+            this.battleLogs.forEach(function (log) {
+                if (log.who === 'Hero') {
+                    if (log.message.includes('weak')) {
+                        score -= 20
+                    }
+                    else if (log.message.includes('strong')) {
+                        score += 10
+                    }
+                }
+            });
+            console.log(score)
+            // Subtract points for every action it takes to kill the monster
+            if (this.killedGoblinIdx !== 0) {
+                score -= (this.killedGoblinIdx - this.randomEventCount) * 8
+            }
+            if (this.killedBarbarianIdx !== 0) {
+                score -= (this.killedBarbarianIdx - this.killedGoblinIdx - this.randomEventCount) * 6
+            }
+            if (this.killedDraculaIdx !== 0) {
+                score -= (this.killedDraculaIdx - this.killedGoblinIdx - this.randomEventCount) * 4
+            }
+            if (this.killedDraculaIdx !== 0 && this.currentRound === 5) { //killed T-Rex
+                score -= (this.killedDraculaIdx - this.killedGoblinIdx - this.randomEventCount) * 2
+            }
+            console.log(score)
+            // subtract for length of logs not including random events
+            score -= this.battleLogs.length - this.randomEventCount
+            return round(score)
         }
     },
     mounted: function () {
@@ -352,35 +428,49 @@ const app = Vue.createApp({
                 switch (event) {
                     case 1:
                         this.addLog('Random Event', 'other', `Everyone gets +${amount} hp`)
+                        this.randomEventCount++;
                         if (this.currentMonster.monsterHp + amount <= this.currentMonster.maxHp) this.currentMonster.monsterHp += amount
                         if (this.hero.heroHp + amount <= this.hero.maxHp) this.hero.heroHp += amount
                         break;
                     case 2:
                         this.addLog('Random Event', 'other', `Everyone loses -${amount} hp`)
+                        this.randomEventCount++;
                         this.currentMonster.monsterHp -= amount
                         this.hero.heroHp -= amount
                         if (this.currentMonster.monsterHp <= 0) {
                             this.currentRound++
-                            if (this.currentRound === 2) this.currentMonster = this.barbarian
-                            else if (this.currentRound === 3) this.currentMonster = this.dracula
-                            else this.currentMonster = this.rex
+                            if (this.currentRound === 2) {
+                                this.currentMonster = this.barbarian
+                                this.killedGoblinIdx = this.battleLogs.length - this.randomEventCount
+                            }
+                            else if (this.currentRound === 3) {
+                                this.currentMonster = this.dracula
+                                this.killedBarbarianIdx = this.battleLogs.length - this.randomEventCount
+                            }
+                            else {
+                                this.currentMonster = this.rex
+                                this.killedDraculaIdx = this.battleLogs.length - this.randomEventCount
+                            } 
                         } 
                         break;
                     case 3:
                         if (this.currentMonster.accuracy - amount >= 10) {
                             this.addLog('Random Event', 'other', `${this.currentMonster.name} -${amount} accuracy`)
+                            this.randomEventCount++;
                             this.currentMonster.accuracy -= amount
                         }
                         break;
                     case 4:
                         if (this.currentMonster.accuracy + amount <= 100) {
                             this.addLog('Random Event', 'other', `${this.currentMonster.name} +${amount} accuracy`)
+                            this.randomEventCount++;
                             this.currentMonster.accuracy += amount
                         }
                         break;
                     case 5:
                         if (this.currentMonster.accuracy - amount >= 10) {
                             this.addLog('Random Event', 'other', `${this.currentMonster.name} -${amount} accuracy, ${this.hero.name} +${amount} accuracy`)
+                            this.randomEventCount++;
                             this.currentMonster.accuracy -= amount
                             this.hero.accuracy += amount
                         }
@@ -388,6 +478,7 @@ const app = Vue.createApp({
                     case 6:
                         if (this.hero.accuracy - amount >= 10) {
                             this.addLog('Random Event', 'other', `${this.currentMonster.name} +${amount} accuracy, ${this.hero.name} -${amount} accuracy`)
+                            this.randomEventCount++;
                             this.currentMonster.accuracy += amount
                             this.hero.accuracy -= amount
                         }
@@ -395,6 +486,7 @@ const app = Vue.createApp({
                     case 7:
                         if (this.currentMonster.strength - amount >= 10) {
                             this.addLog('Random Event', 'other', `${this.currentMonster.name} -${amount} strength, ${this.hero.name} +${amount} strength`)
+                            this.randomEventCount++;
                             this.currentMonster.strength -= amount
                             this.hero.strength += amount
                         }
@@ -402,6 +494,7 @@ const app = Vue.createApp({
                     case 8:
                         if (this.hero.strength - amount >= 10) {
                             this.addLog('Random Event', 'other', `${this.currentMonster.name} +${amount} strength, ${this.hero.name} -${amount} strength`)
+                            this.randomEventCount++;
                             this.currentMonster.strength += amount
                             this.hero.strength -= amount
                         }

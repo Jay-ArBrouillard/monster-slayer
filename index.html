@@ -128,7 +128,8 @@
         <button @click="surrender">SURRENDER</button>
       </section>
       <section class="container" v-else style="animation: pulse 2s infinite;">
-        <h2>Game Over</h2>
+        <h1>Game Over</h1>
+        <h2>Score: {{ gameScore }}</h2>
         <p v-if="hero.heroHp <= 0 && currentMonster.monsterHp <= 0">It's a draw!</p>
         <p v-else-if="hero.heroHp <= 0 || currentRound !== 5">Monster wins!</p>
         <p v-else>Hero wins!</p>

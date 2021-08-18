@@ -321,14 +321,13 @@ const app = Vue.createApp({
             return this.usedSpecialAttack;
         },
         gameOver() {
-            let gameOver = false
             if (this.hero.heroHp <= 0) {
-                gameOver = true
+                return true
             }
             if (this.currentRound === 5 && this.currentMonster.monsterHp <= 0) {
-                gameOver = true
+                return true
             }
-            return gameOver
+            return false
         },
         monsterIcon() {
             if (this.currentMonster.monsterAttackStyle === 'ranged') return 'assets/bowman.png'
@@ -407,7 +406,7 @@ const app = Vue.createApp({
         window.setInterval(() => {
             if (this.currentMonster.name === 'Dracula') {
                 // Heal Monster if his heal is low enough
-                if (this.currentMonster.monsterHp > 0 && this.currentMonster.monsterHp <= this.currentMonster.maxHp * 0.2) {
+                if (this.gameOver === false && this.currentMonster.monsterHp <= (this.currentMonster.maxHp * 0.2)) {
                     if (this.currentMonster.monsterHp + 1 > this.currentMonster.maxHp) {
                         this.currentMonster.monsterHp = this.currentMonster.maxHp
                     } else {

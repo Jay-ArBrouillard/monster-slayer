@@ -178,6 +178,7 @@ const app = Vue.createApp({
                     this.currentMonster = this.rex
                     this.killedDraculaIdx = this.battleLogs.length - this.randomEventCount
                 } 
+                this.currentMonster.monsterAttackStyle = ''
             } else {
                 this.attackHero()
             }
@@ -203,7 +204,8 @@ const app = Vue.createApp({
                 else {
                     this.currentMonster = this.rex
                     this.killedDraculaIdx = this.battleLogs.length - this.randomEventCount
-                } 
+                }
+                this.currentMonster.monsterAttackStyle = ''
             } else {
                 this.attackHero()
             }
@@ -254,6 +256,8 @@ const app = Vue.createApp({
             this.barbarian.strength = this.barbarian.baseStrength;
             this.rex.strength = this.rex.baseStrength;
             this.currentMonster = this.goblin
+            this.currentMonster.monsterAttackStyle = ''
+            this.heroAttackStyle = ''
             this.hero.accuracy = 96;
             this.goblin.accuracy = 90;
             this.barbarian.accuracy = 85;

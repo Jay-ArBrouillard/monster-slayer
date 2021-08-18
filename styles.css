@@ -54,25 +54,59 @@ section {
   margin: 0.25rem;
 }
 
-.monster {
-  width: 55px;
-  height: 55px;
-  margin-top: 10px;
-  border: 2px dotted #575757;
-  border-radius: 3px;
-  animation: pulse 2s infinite;
-}
-
 @keyframes pulse {
   0% { transform: scale(0.9); }
   70% { transform: scale(1); }
   100% { transform: scale(0.9); }
 }
 
-.flexbox-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+@media (max-width: 776px) {
+  .flexbox-container {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .attackStyle {
+    width: 20%;
+    height: 20%;
+    border-radius: 5px;
+    display: inline-block;
+  }
+
+  .monster {
+    width: 60px;
+    height: 60px;
+    margin-top: 10px;
+    border: 2px dotted #575757;
+    border-radius: 3px;
+    animation: pulse 2s infinite;
+  }
+}
+
+@media (min-width: 776px) {
+  .flexbox-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .attackStyle {
+    width: 30%;
+    height: 30%;
+    border-radius: 5px;
+    display: inline-block;
+  }
+
+  .monster {
+    width: 70px;
+    height: 70px;
+    margin-top: 10px;
+    border: 2px dotted #575757;
+    border-radius: 3px;
+    animation: pulse 2s infinite;
+  }
 }
 
 .flexbox-item {
@@ -89,13 +123,6 @@ section {
 
 .flexbox-item-3 {
   flex-grow: 1;
-}
-
-.attackStyle {
-  width: 35%;
-  height: 35%;
-  border-radius: 5px;
-  display: inline-block;
 }
 
 #controls {

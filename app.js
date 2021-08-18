@@ -324,7 +324,7 @@ const app = Vue.createApp({
             return round(round(Math.ceil(this.currentMonster.strength * 2) * 1.5) * 2.5)
         },
         heroMaxHeal() {
-            return round(Math.ceil((this.hero.maxHp - this.hero.heroHp) * 0.5))
+            return round((this.hero.maxHp - this.hero.heroHp) * 0.5))
         },
         heroMaxHit() {
             return this.specialAttackOnCooldown ? round(this.hero.strength * 2.5) : round(Math.max(this.specialAttackMaxHit, this.hero.strength * 2.5)) 

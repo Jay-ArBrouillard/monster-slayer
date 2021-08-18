@@ -237,14 +237,13 @@ const app = Vue.createApp({
                 this.monsterStunnedCountDown = 2
                 this.addLog(this.currentMonster.name, 'stun', `successfully stunned Monster for ${this.monsterStunnedCountDown} turn(s)`)
             } else {
-                this.addLog(this.currentMonster.name, 'stunFail', 'attempted to stun Monster and failed')
+                this.addLog(this.hero.name, 'stunFail', 'attempted to stun Monster and failed')
                 this.attackHero()
             }
             if (this.usedSpecialAttack) this.specialAttackCounter++;
         },
         reset() {
             this.hero.heroHp = this.hero.maxHp;
-            this.currentMonster = this.goblin;
             this.goblin.monsterHp = this.goblin.maxHp;
             this.barbarian.monsterHp = this.barbarian.maxHp;
             this.dracula.monsterHp = this.dracula.maxHp;
@@ -254,15 +253,14 @@ const app = Vue.createApp({
             this.dracula.strength = this.dracula.baseStrength;
             this.barbarian.strength = this.barbarian.baseStrength;
             this.rex.strength = this.rex.baseStrength;
+            this.currentMonster = this.goblin
             this.hero.accuracy = 96;
             this.goblin.accuracy = 90;
             this.barbarian.accuracy = 85;
             this.dracula.accuracy = 92.5;
-            this.rex.accuracy = 20;
+            this.rex.accuracy = 15;
             this.specialAttackCounter = 0;
             this.usedSpecialAttack = false;
-            this.currentMonster.monsterAttackStyle = '';
-            this.currentMonster.monsterAttackStyleOrder = this.goblin.monsterAttackStyleOrder
             this.battleLogs = [];
             this.currentRound = 1
             this.specialAttackMinHit = 16
@@ -406,7 +404,6 @@ const app = Vue.createApp({
     },
     mounted: function () {
         this.currentMonster = this.goblin
-        this.currentMonster.monsterAttackStyleOrder = this.currentMonster.monsterAttackStyleOrder
         window.setInterval(() => {
             if (this.currentMonster.name === 'Dracula') {
                 // Heal Monster if his heal is low enough

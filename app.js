@@ -110,7 +110,7 @@ const app = Vue.createApp({
                 this.monsterStunnedCountDown--;
                 this.addLog(this.currentMonster.name, 'stunned', `stunned for ${this.monsterStunnedCountDown} more turn(s)`)
             } else {
-                if (this.currentMonster.name === 'Barbarian') this.calculateBarbarianStrength()
+                if (this.currentMonster.name === this.barbarian.name) this.calculateBarbarianStrength()
                 const attackObject = this.calculateAttack(this.currentMonster.monsterAttackStyle, this.heroAttackStyle)
                 const hit = (this.currentMonster.accuracy * attackObject.accuracyModifier) >= getRandomNumberBetween(1, 100)
                 if (hit) {
@@ -124,7 +124,7 @@ const app = Vue.createApp({
                         this.addLog(this.currentMonster.name, 'attack', `${this.currentMonster.monsterAttackStyle} ${attackMessagePrefix} attacks and deals`, monsterAttack)
                     }
                     this.hero.heroHp -= monsterAttack
-                    if (this.currentMonster.name === 'Dracula') {
+                    if (this.currentMonster.name === this.dracula.name) {
                         //Lifesteal
                         if (getRandomNumberBetween(1,100) <= 10) {
                             const lifestealAmount = Math.max(1, round(monsterAttack * 0.1)) //10% of attack with minimum of 1
@@ -210,7 +210,7 @@ const app = Vue.createApp({
             this.healCount--;
         },
         stun() {
-            const stun = getRandomNumberBetween(1, 2)
+            const stun = getRandomIntInclusive(1, 2)
             if (stun === 2) {
                 this.monsterStunnedCountDown = 2
                 this.addLog(this.currentMonster.name, 'stun', `successfully stunned Monster for ${this.monsterStunnedCountDown} turn(s)`)

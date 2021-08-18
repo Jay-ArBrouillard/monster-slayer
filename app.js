@@ -294,11 +294,11 @@ const app = Vue.createApp({
         // Heal Monster if his heal is low enough
         window.setInterval(() => {
             if (this.currentMonster.name === 'Dracula') {
-                if (this.currentMonster.monsterHp > 0 && this.currentMonster.monsterHp <= round(this.currentMonster.maxHp / 4)) {
-                    if (this.currentMonster.monsterHp + 2 > this.currentMonster.maxHp) {
+                if (this.currentMonster.monsterHp > 0 && this.currentMonster.monsterHp <= this.currentMonster.maxHp * 0.2) {
+                    if (this.currentMonster.monsterHp + 1 > this.currentMonster.maxHp) {
                         this.currentMonster.monsterHp = this.currentMonster.maxHp
                     } else {
-                        this.currentMonster.monsterHp += 2
+                        this.currentMonster.monsterHp += 1
                     }
                 }
             }

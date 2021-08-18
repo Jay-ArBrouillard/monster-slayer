@@ -98,12 +98,13 @@ const app = Vue.createApp({
                 const hit = attackObject.accuracy >= getRandomNumberBetween(1, 100)
                 if (hit) {
                     let monsterAttack = round(getRandomNumberBetween(this.currentMonster.strength, this.currentMonster.strength * 2) * attackObject.damageModifier)
+                    const attackMessagePrefix = attackObject.damageModifier < 1.0 ? 'weak' : attackObject.damageModifier > 1.0 ? 'strong' : ''; 
                     //If you fail a stun, then monster will counter attack for big damage
                     if (this.battleLogs[0].message === 'attempted to stun Monster and failed') {
                         monsterAttack = round(monsterAttack * 2.5)
-                        this.addLog(this.currentMonster.name, 'attack', `${this.currentMonster.monsterAttackStyle} counter attacked and dealt`, monsterAttack)
+                        this.addLog(this.currentMonster.name, 'attack', `${this.currentMonster.monsterAttackStyle} counter ${attackMessagePrefix} attacks and deals`, monsterAttack)
                     } else {
-                        this.addLog(this.currentMonster.name, 'attack', `${this.currentMonster.monsterAttackStyle} attacked and dealt`, monsterAttack)
+                        this.addLog(this.currentMonster.name, 'attack', `${this.currentMonster.monsterAttackStyle} ${attackMessagePrefix} attacks and deals`, monsterAttack)
                     }
                     this.hero.heroHp -= monsterAttack
                     if (this.currentMonster.name === 'Dracula') {
@@ -123,7 +124,7 @@ const app = Vue.createApp({
                     this.currentMonster.monsterAttackStyleOrder.push(this.currentMonster.monsterAttackStyleOrder.shift()) //rotate array
                     this.currentMonster.monsterAttackStyle = this.currentMonster.monsterAttackStyleOrder[this.currentMonster.monsterAttackStyleOrder.length - 1]
                 } else {
-                    this.addLog(this.currentMonster.name, 'miss', `attempted ${this.currentMonster.monsterAttackStyle} attack and missed`)
+                    this.addLog(this.currentMonster.name, 'miss', `attempted ${this.currentMonster.monsterAttackStyle} attacks and missed`)
                 }
             }
         },
@@ -134,10 +135,11 @@ const app = Vue.createApp({
             const hit = attackObject.accuracy >= getRandomNumberBetween(1, 100)
             if (hit) {
                 let heroAttack = round(getRandomNumberBetween(this.hero.strength, this.hero.strength*2) * attackObject.damageModifier)
+                const attackMessagePrefix = attackObject.damageModifier < 1.0 ? 'weak' : attackObject.damageModifier > 1.0 ? 'strong' : ''; 
                 this.currentMonster.monsterHp -= heroAttack
-                this.addLog('Hero', 'attack', `${this.heroAttackStyle} attacked and dealt`, heroAttack)
+                this.addLog('Hero', 'attack', `${this.heroAttackStyle} ${attackMessagePrefix} attacks and deals`, heroAttack)
             } else {
-                this.addLog('Hero', 'miss', `attempted ${this.heroAttackStyle} attack and missed`)
+                this.addLog('Hero', 'miss', `attempted ${this.heroAttackStyle} attack and misses`)
             }
             if (this.usedSpecialAttack) this.specialAttackCounter++;
             if (this.currentMonster.monsterHp <= 0) {
@@ -155,7 +157,7 @@ const app = Vue.createApp({
             this.currentMonster.monsterHp -= heroSpecialAttack
             this.usedSpecialAttack = true
             this.specialAttackCounter++;
-            this.addLog('Hero', 'special', 'special attacked and deals', heroSpecialAttack)
+            this.addLog('Hero', 'special', 'special attacks and deals', heroSpecialAttack)
             if (this.currentMonster.monsterHp <= 0) {
                 this.addLog('Hero', 'kill', `slain ${this.currentMonster.name}. Round ${this.currentRound} completed`)
                 this.currentRound++

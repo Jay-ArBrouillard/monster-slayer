@@ -178,7 +178,7 @@ const app = Vue.createApp({
         },
         heal() {
             const missingHP = Math.ceil((this.hero.maxHp - this.hero.heroHp) * 0.5)
-            const healValue = getRandomNumberBetween(1, missingHP)
+            const healValue = round(getRandomNumberBetween(1, missingHP))
             if (healValue + this.hero.heroHp > 100) {
                 this.hero.heroHp = this.hero.maxHp
                 this.addLog('Hero', 'fullHeal', 'heals to full', healValue)

@@ -30,32 +30,49 @@ const app = Vue.createApp({
                 name: 'Hero',
                 heroHp: 100,
                 maxHp: 100,
-                strength: 8
+                strength: 8,
+                baseStrength: 5,
+                accuracy: 96
             },
             goblin: {
                 name: 'Goblin',
                 monsterHp: 100,
                 maxHp: 100,
                 strength: 5,
+                baseStrength: 5,
                 monsterAttackStyle: '',
                 monsterAttackStyleOrder: ['melee'],
+                accuracy: 90
             },
             barbarian: {
                 name: 'Barbarian',
                 monsterHp: 100,
                 maxHp: 100,
-                strength: 5,
-                baseStrength: 5,
+                strength: 6.5,
+                baseStrength: 6.5,
                 monsterAttackStyle: '',
                 monsterAttackStyleOrder: ['melee', 'ranged'],
+                accuracy: 85
             },
             dracula: {
                 name: 'Dracula',
-                monsterHp: 200,
-                maxHp: 200,
-                strength: 9,
+                monsterHp: 150,
+                maxHp: 150,
+                strength: 8,
+                baseStrength: 8,
                 monsterAttackStyle: '',
                 monsterAttackStyleOrder: ['mage', 'melee'],
+                accuracy: 92.5
+            },
+            rex: {
+                name: 'T-Rex',
+                monsterHp: 200,
+                maxHp: 200,
+                strength: 40,
+                baseStrength: 40,
+                monsterAttackStyle: '',
+                monsterAttackStyleOrder: ['melee'],
+                accuracy: 20
             },
             currentMonster: '',
         }
@@ -64,27 +81,27 @@ const app = Vue.createApp({
         calculateAttack(attackType, otherAttackType) {
             if (attackType === 'melee') {
                 if (otherAttackType === 'melee') {
-                    return {accuracy: 90, damageModifier: 1};
+                    return {accuracyModifier: 1, damageModifier: 1};
                 } else if (otherAttackType=== 'ranged') {
-                    return {accuracy: 99, damageModifier: 1.1};
+                    return {accuracyModifier: 1.1, damageModifier: 1.5};
                 } else {
-                    return {accuracy: 80, damageModifier: 0.9};
+                    return {accuracyModifier: 0.75, damageModifier: 0.9};
                 }
             } else if (attackType === 'ranged') {
                 if (otherAttackType === 'melee') {
-                    return {accuracy: 80, damageModifier: 0.9};
+                    return {accuracyModifier: 0.75, damageModifier: 0.9};
                 } else if (otherAttackType === 'ranged') {
-                    return {accuracy: 90, damageModifier: 1};
+                    return {accuracyModifier: 1, damageModifier: 1};
                 } else {
-                    return {accuracy: 99, damageModifier: 1.1};
+                    return {accuracyModifier: 1.1, damageModifier: 1.5};
                 }
             } else {
                 if (otherAttackType === 'melee') {
-                    return {accuracy: 99, damageModifier: 1.1};
+                    return {accuracyModifier: 1.1, damageModifier: 1.5};
                 } else if (otherAttackType === 'ranged') {
-                    return {accuracy: 80, damageModifier: 0.9};
+                    return {accuracyModifier: 0.75, damageModifier: 0.9};
                 } else {
-                    return {accuracy: 90, damageModifier: 1};
+                    return {accuracyModifier: 1, damageModifier: 1};
                 }
             }
         },
@@ -95,7 +112,7 @@ const app = Vue.createApp({
             } else {
                 if (this.currentMonster.name === 'Barbarian') this.calculateBarbarianStrength()
                 const attackObject = this.calculateAttack(this.currentMonster.monsterAttackStyle, this.heroAttackStyle)
-                const hit = attackObject.accuracy >= getRandomNumberBetween(1, 100)
+                const hit = (this.currentMonster.accuracy * attackObject.accuracyModifier) >= getRandomNumberBetween(1, 100)
                 if (hit) {
                     let monsterAttack = round(getRandomNumberBetween(this.currentMonster.strength, this.currentMonster.strength * 2) * attackObject.damageModifier)
                     const attackMessagePrefix = attackObject.damageModifier < 1.0 ? 'weak' : attackObject.damageModifier > 1.0 ? 'strong' : ''; 
@@ -132,7 +149,7 @@ const app = Vue.createApp({
             this.heroAttackStyle = type
             this.currentMonster.monsterAttackStyle = this.currentMonster.monsterAttackStyleOrder[0]
             const attackObject = this.calculateAttack(this.heroAttackStyle, this.currentMonster.monsterAttackStyle)
-            const hit = attackObject.accuracy >= getRandomNumberBetween(1, 100)
+            const hit = (this.hero.accuracy * attackObject.accuracyModifier) >= getRandomNumberBetween(1, 100)
             if (hit) {
                 let heroAttack = round(getRandomNumberBetween(this.hero.strength, this.hero.strength*2) * attackObject.damageModifier)
                 const attackMessagePrefix = attackObject.damageModifier < 1.0 ? 'weak' : attackObject.damageModifier > 1.0 ? 'strong' : ''; 
@@ -146,7 +163,8 @@ const app = Vue.createApp({
                 this.addLog('Hero', 'kill', `slain ${this.currentMonster.name}. Round ${this.currentRound} completed`)
                 this.currentRound++
                 if (this.currentRound === 2) this.currentMonster = this.barbarian
-                else this.currentMonster = this.dracula
+                else if (this.currentRound === 3) this.currentMonster = this.dracula
+                else this.currentMonster = this.rex
             } else {
                 this.attackHero()
             }
@@ -162,7 +180,8 @@ const app = Vue.createApp({
                 this.addLog('Hero', 'kill', `slain ${this.currentMonster.name}. Round ${this.currentRound} completed`)
                 this.currentRound++
                 if (this.currentRound === 2) this.currentMonster = this.barbarian
-                else this.currentMonster = this.dracula
+                else if (this.currentRound === 3) this.currentMonster = this.dracula
+                else this.currentMonster = this.rex
             } else {
                 this.attackHero()
             }
@@ -171,8 +190,8 @@ const app = Vue.createApp({
         },
         chargeSpecialAttack() {
             //Special attack always hits
-            this.specialAttackMinHit = Math.floor(this.specialAttackMinHit * (Math.max(1.1, Math.random() * 0.5 + 1)))
-            this.specialAttackMaxHit = Math.ceil(this.specialAttackMaxHit * (Math.max(1.1, Math.random() * 0.5 + 1)))
+            this.specialAttackMaxHit = Math.floor(this.specialAttackMaxHit * (Math.max(1.1, Math.random() * 0.5 + 1)))
+            this.specialAttackMinHit = Math.min(this.specialAttackMaxHit, Math.floor(this.specialAttackMinHit * (Math.max(1.1, Math.random() * 0.5 + 1)))) 
             this.addLog('Hero', 'charge', `charged special attack to new max hit of ${this.specialAttackMaxHit}`)
             this.attackHero()
         },
@@ -207,7 +226,12 @@ const app = Vue.createApp({
             this.goblin.monsterHp = this.goblin.maxHp;
             this.barbarian.monsterHp = this.barbarian.maxHp;
             this.dracula.monsterHp = this.dracula.maxHp;
+            this.rex.monsterHp = this.rex.maxHp;
+            this.hero.strength = this.hero.baseStrength;
+            this.goblin.strength = this.goblin.baseStrength;
+            this.dracula.strength = this.dracula.baseStrength;
             this.barbarian.strength = this.barbarian.baseStrength;
+            this.rex.strength = this.rex.baseStrength;
             this.specialAttackCounter = 0;
             this.usedSpecialAttack = false;
             this.currentMonster.monsterAttackStyle = '';
@@ -272,7 +296,7 @@ const app = Vue.createApp({
             if (this.hero.heroHp <= 0) {
                 gameOver = true
             }
-            if (this.currentRound === 4 && this.currentMonster.monsterHp <= 0) {
+            if (this.currentRound === 5 && this.currentMonster.monsterHp <= 0) {
                 gameOver = true
             }
             return gameOver
@@ -290,30 +314,94 @@ const app = Vue.createApp({
             else return 'assets/uncertainty.png'
         },
         monsterMaxHit() {
-            return round(this.currentMonster.strength * 2.1)
+            return round(this.currentMonster.strength * 2.5)
         },
         monsterMaxCounterHit() {
-            return round(round(Math.ceil(this.currentMonster.strength * 2) * 1.1) * 2.5)
+            return round(round(Math.ceil(this.currentMonster.strength * 2) * 1.5) * 2.5)
         },
         heroMaxHeal() {
             return round(Math.ceil((this.hero.maxHp - this.hero.heroHp) * 0.5))
         },
         heroMaxHit() {
-            return this.specialAttackOnCooldown ? round(this.hero.strength * 2.1) : round(Math.max(this.specialAttackMaxHit, this.hero.strength * 2.1)) 
+            return this.specialAttackOnCooldown ? round(this.hero.strength * 2.5) : round(Math.max(this.specialAttackMaxHit, this.hero.strength * 2.5)) 
         }
     },
     mounted: function () {
         this.currentMonster = this.goblin
         this.currentMonster.monsterAttackStyleOrder = this.currentMonster.monsterAttackStyleOrder
-        // Heal Monster if his heal is low enough
         window.setInterval(() => {
             if (this.currentMonster.name === 'Dracula') {
+                // Heal Monster if his heal is low enough
                 if (this.currentMonster.monsterHp > 0 && this.currentMonster.monsterHp <= this.currentMonster.maxHp * 0.2) {
                     if (this.currentMonster.monsterHp + 1 > this.currentMonster.maxHp) {
                         this.currentMonster.monsterHp = this.currentMonster.maxHp
                     } else {
                         this.currentMonster.monsterHp += 1
                     }
+                }
+            }
+
+            // Random event 
+            if (this.gameOver === false && Math.random() <= 0.025) {
+                const event = getRandomIntInclusive(1, 8)
+                const amount = getRandomIntInclusive(3, 7)
+                switch (event) {
+                    case 1:
+                        this.addLog('Random Event', 'other', `Everyone gets +${amount} hp`)
+                        if (this.currentMonster.monsterHp + amount <= this.currentMonster.maxHp) this.currentMonster.monsterHp += amount
+                        if (this.hero.heroHp + amount <= this.hero.maxHp) this.hero.heroHp += amount
+                        break;
+                    case 2:
+                        this.addLog('Random Event', 'other', `Everyone loses -${amount} hp`)
+                        this.currentMonster.monsterHp -= amount
+                        this.hero.heroHp -= amount
+                        if (this.currentMonster.monsterHp <= 0) {
+                            this.currentRound++
+                            if (this.currentRound === 2) this.currentMonster = this.barbarian
+                            else if (this.currentRound === 3) this.currentMonster = this.dracula
+                            else this.currentMonster = this.rex
+                        } 
+                        break;
+                    case 3:
+                        if (this.currentMonster.accuracy - amount >= 10) {
+                            this.addLog('Random Event', 'other', `${this.currentMonster.name} -${amount} accuracy`)
+                            this.currentMonster.accuracy -= amount
+                        }
+                        break;
+                    case 4:
+                        if (this.currentMonster.accuracy + amount <= 100) {
+                            this.addLog('Random Event', 'other', `${this.currentMonster.name} +${amount} accuracy`)
+                            this.currentMonster.accuracy += amount
+                        }
+                        break;
+                    case 5:
+                        if (this.currentMonster.accuracy - amount >= 10) {
+                            this.addLog('Random Event', 'other', `${this.currentMonster.name} -${amount} accuracy, ${this.hero.name} +${amount} accuracy`)
+                            this.currentMonster.accuracy -= amount
+                            this.hero.accuracy += amount
+                        }
+                        break;
+                    case 6:
+                        if (this.hero.accuracy - amount >= 10) {
+                            this.addLog('Random Event', 'other', `${this.currentMonster.name} +${amount} accuracy, ${this.hero.name} -${amount} accuracy`)
+                            this.currentMonster.accuracy += amount
+                            this.hero.accuracy -= amount
+                        }
+                        break;
+                    case 7:
+                        if (this.currentMonster.strength - amount >= 10) {
+                            this.addLog('Random Event', 'other', `${this.currentMonster.name} -${amount} strength, ${this.hero.name} +${amount} strength`)
+                            this.currentMonster.strength -= amount
+                            this.hero.strength += amount
+                        }
+                        break;
+                    case 8:
+                        if (this.hero.strength - amount >= 10) {
+                            this.addLog('Random Event', 'other', `${this.currentMonster.name} +${amount} strength, ${this.hero.name} -${amount} strength`)
+                            this.currentMonster.strength += amount
+                            this.hero.strength -= amount
+                        }
+                        break;
                 }
             }
         }, 500)

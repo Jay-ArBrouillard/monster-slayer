@@ -197,6 +197,10 @@ button:disabled {
   color: blue;
 }
 
+.log--other {
+  color: #af0a78;
+}
+
 .stepper-wrapper {
   font-family: Arial;
   margin-top: 50px;

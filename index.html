@@ -25,7 +25,7 @@
       <button @click="toggleRules = !toggleRules">{{ toggleRules ? "Hide Rules" : "Show Rules" }}</button>
       </section>
       <section v-if="toggleRules">
-        <p><strong>How to play:</strong> To win you must defeat 3 monsters. Each Monster is progressively more difficult and/or utilizes different abilities. Use the buttons to interact.
+        <p><strong>How to play:</strong> To win you must defeat 4 monsters. Each Monster is progressively more difficult and/or utilizes different abilities. Use the buttons to interact.
         </br><strong>Combat:</strong> This game is based around the combat triangle. All attacks from you or the Monster can hit or miss. If you attack with Melee and the Monster's attack style is Range, then you'll almost be guarenteed to hit and rewarded with a damage boost.
         On the otherhand, if you attack with Melee and the Monster is using Mage then you're more likely to miss and you'll be penalized damage. Keep in mind the Monster may change attack styles.
         <ul>
@@ -33,7 +33,7 @@
           <li>Range is strong against Mage</li>
           <li>Mage is strong against Melee</li>
         </ul>
-        </br><strong>Special Attack:</strong> Your special attack is a guarenteed hit and will hit harder than your normal attacks. Cooldown of 2 turns after usage.
+        </br><strong>Special Attack:</strong> Your special attack is a guarenteed hit and will hit harder than your normal attacks. Cooldown of 2 turns after usage. The min and max hit of the special attack is denoted in parentheses on the button.
         </br><strong>Charge Special Attack:</strong> Spend a turn to increase the minimal and maximal amount of damage outputted by your special attack.
         </br><Strong>Stun:</Strong> Stunning has a 50% chance of success. Upon succeeding the Monster will not beable to attack for 2 turns, however, if you fail it will counter attack you for massive damage. Only the Monster can enact counter attacks.
         </br><strong>Heal:</strong> Heal for up to 50% of your missing health. For example, at 50HP you can heal a max of 25HP. Heal is only available for maximum of 10 uses for all of the fights.
@@ -41,14 +41,15 @@
         <ol>
           <li>Goblin (easy) - Your average Joe when it comes to Monsters. Nothing special about him.</li>
           <li>Barbarian (medium) - The berserker. His strength increases by 2% for every health point he loses.</li>
-          <li>Dracula (medium/hard) - As a vampire he boasts 200 HP, has a chance to lifesteal 10% of any damage he deals, and when under 20% health he will passively heal 2 HP per second.</li>
+          <li>Dracula (medium/hard) - As a vampire he boasts 150 HP, has a chance to lifesteal 10% of any damage he deals, and when under 20% health he will passively heal 2 HP per second.</li>
+          <li>T-Rex (hard) - A lot of health. Massive strength. Awful accuracy.</li>
         </ol>
       </p>
       </section>
       <section class="container">
         <div class="stepper-wrapper">
           <div class="stepper-item" :class="{active: currentRound === 1, completed: currentRound >= 2}">
-            <img class="step-icon" :src="currentRound === 1 ? 'assets/goblin-head.png' : 'assets/goblin-head-green.png'" alt="Monster Image">
+            <img class="step-icon" :src="currentRound <= 1 ? 'assets/goblin-head.png' : 'assets/goblin-head-green.png'" alt="Monster Image">
             <div class="step-name">{{ goblin.name }}</div>
           </div>
           <div class="stepper-item" :class="{active: currentRound === 2, completed: currentRound >= 3}">
@@ -58,6 +59,10 @@
           <div class="stepper-item" :class="{active: currentRound === 3, completed: currentRound >= 4}">
             <img class="step-icon" :src="currentRound <= 3 ? 'assets/vampire-dracula.png' : 'assets/vampire-dracula-green.png'" alt="Monster Image">
             <div class="step-name">{{ dracula.name }}</div>
+          </div>
+          <div class="stepper-item" :class="{active: currentRound === 4, completed: currentRound >= 5}">
+            <img class="step-icon" :src="currentRound <= 4 ? 'assets/dinosaur-rex.png' : 'assets/dinosaur-rex-green.png'" alt="Monster Image">
+            <div class="step-name">{{ rex.name }}</div>
           </div>
         </div>
       </section>
@@ -70,7 +75,10 @@
             </div>
           </div>
           <div class="flexbox-item flexbox-item-2">
-            <img class="monster" :src="currentMonster.name === 'Goblin' ? 'assets/goblin-head.png' : currentMonster.name === 'Barbarian' ? 'assets/barbarian.png' : 'assets/vampire-dracula.png'" alt="Monster Image">
+            <img v-if="currentMonster.name === goblin.name" class="monster" src="assets/goblin-head.png" alt="Monster Image">
+            <img v-else-if="currentMonster.name === barbarian.name" class="monster" src="assets/barbarian.png" alt="Monster Image">
+            <img v-else-if="currentMonster.name === dracula.name" class="monster" src="assets/vampire-dracula.png" alt="Monster Image">
+            <img v-else-if="currentMonster.name === rex.name" class="monster" src="assets/dinosaur-rex.png" alt="Monster Image">
             <h2>{{ currentMonster.name }}</h2>
           </div>
           <div class="flexbox-item flexbox-item-3">
@@ -78,6 +86,7 @@
             <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Str: {{ currentMonster.strength }}</p>
             <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Max Hit: {{ monsterMaxHit }}</p>
             <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Max Counter Hit:  {{ monsterMaxCounterHit }}</p>
+            <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Base Accuracy:  {{ currentMonster.accuracy }}%</p>
             </div>
         </div>
         <div class="healthbar">
@@ -101,6 +110,7 @@
             <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Str: {{ hero.strength }}</p>
             <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Max Hit: {{ heroMaxHit }}</p>
             <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Max Heal: {{ heroMaxHeal }}</p>
+            <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Base Accuracy:  {{ hero.accuracy }}%</p>
           </div>
         </div>
         <div class="healthbar">
@@ -120,15 +130,15 @@
       <section class="container" v-else style="animation: pulse 2s infinite;">
         <h2>Game Over</h2>
         <p v-if="hero.heroHp <= 0 && currentMonster.monsterHp <= 0">It's a draw!</p>
-        <p v-else-if="hero.heroHp <= 0 || currentRound !== 4">Monster wins!</p>
+        <p v-else-if="hero.heroHp <= 0 || currentRound !== 5">Monster wins!</p>
         <p v-else>Hero wins!</p>
         <button @click="reset">New Game?</button>
       </section>
-      <section id="log" class="container">
+      <section id="log" class="container" style="overflow:hidden; overflow-y:scroll; height:200px; width:100%">
         <h2>Battle Log</h2>
         <ul>
           <li :key="log" v-for="log in battleLogs">
-            <span :class="{'log--player': log.who === 'Hero', 'log--monster': log.who !== 'Hero'}">{{ log.who }}: </span>
+            <span :class="{'log--player': log.who === 'Hero', 'log--monster': ['Goblin', 'Barbarian', 'Dracula', 'T-Rex'].includes(log.who), 'log--other': log.who === 'Random Event'}">{{ log.who }}: </span>
             <span v-if="log.what === 'heal'">{{ log.message }} <span class="log--heal">{{ log.amount }}</span></span>
             <span v-else-if="log.what === 'fullHeal'">{{ log.message }} <span class="log--heal">100</span></span>
             <span v-else-if="log.what === 'special'">{{ log.message }} <span class="log--special">{{ log.amount }}</span></span>

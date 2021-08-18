@@ -386,7 +386,6 @@ const app = Vue.createApp({
                     }
                 }
             });
-            console.log(score)
             // Subtract points for every action it takes to kill the monster
             if (this.killedGoblinIdx !== 0) {
                 score -= (this.killedGoblinIdx - this.randomEventCount) * 8
@@ -400,7 +399,6 @@ const app = Vue.createApp({
             if (this.killedDraculaIdx !== 0 && this.currentRound === 5) { //killed T-Rex
                 score -= (this.killedDraculaIdx - this.killedGoblinIdx - this.randomEventCount) * 2
             }
-            console.log(score)
             // subtract for length of logs not including random events
             score -= this.battleLogs.length - this.randomEventCount
             return round(score)

@@ -117,7 +117,7 @@
         <button @click="stun" :disabled="monsterStunnedCountDown > 0">STUN</button>
         <button @click="surrender">SURRENDER</button>
       </section>
-      <section class="container" v-else>
+      <section class="container" v-else style="animation: pulse 2s infinite;">
         <h2>Game Over</h2>
         <p v-if="hero.heroHp <= 0 && currentMonster.monsterHp <= 0">It's a draw!</p>
         <p v-else-if="hero.heroHp <= 0 || currentRound !== 4">Monster wins!</p>

@@ -137,12 +137,11 @@ const app = Vue.createApp({
                             }
                         }
                     }
-    
-                    this.currentMonster.monsterAttackStyleOrder.push(this.currentMonster.monsterAttackStyleOrder.shift()) //rotate array
-                    this.currentMonster.monsterAttackStyle = this.currentMonster.monsterAttackStyleOrder[this.currentMonster.monsterAttackStyleOrder.length - 1]
                 } else {
                     this.addLog(this.currentMonster.name, 'miss', `attempted ${this.currentMonster.monsterAttackStyle} attacks and missed`)
                 }
+                this.currentMonster.monsterAttackStyleOrder.push(this.currentMonster.monsterAttackStyleOrder.shift()) //rotate array
+                this.currentMonster.monsterAttackStyle = this.currentMonster.monsterAttackStyleOrder[this.currentMonster.monsterAttackStyleOrder.length - 1]
             }
         },
         attackMonster(type) {

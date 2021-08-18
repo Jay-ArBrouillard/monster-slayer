@@ -76,7 +76,7 @@
           <div class="flexbox-item flexbox-item-3">
             <p style="margin-bottom: 0;">{{ monsterHealthBarValue }} / {{ currentMonster.maxHp }}</p>
             <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Str: {{ currentMonster.strength }}</p>
-            <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Max Hit: {{ round(currentMonster.strength * 2.1) }}</p>
+            <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Max Hit: {{ Math.round(currentMonster.strength * 2.1) }}</p>
             <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Max Counter:  {{ Math.ceil(currentMonster.strength * 4.6) }}</p>
             </div>
         </div>
@@ -99,7 +99,7 @@
           <div class="flexbox-item flexbox-item-3">
             <p style="margin-bottom: 0;">{{ heroHealthBarValue }} / {{ hero.maxHp }}</p>
             <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Str: {{ hero.strength }}</p>
-            <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Max Hit: {{ specialAttackOnCooldown ? round(hero.strength * 2.1) : round(Math.max(specialAttackMaxHit, hero.strength * 2.1)) }}</p>
+            <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Max Hit: {{ specialAttackOnCooldown ? Math.round(hero.strength * 2.1) : Math.round(Math.max(specialAttackMaxHit, hero.strength * 2.1)) }}</p>
             <p style="font-size: small; margin-top: 0; margin-bottom: 0;">Max Heal: {{ Math.ceil((hero.maxHp - hero.heroHp) * 0.5) }}</p>
           </div>
         </div>

@@ -66,7 +66,7 @@ const app = Vue.createApp({
                 if (otherAttackType === 'melee') {
                     return {accuracy: 90, damageModifier: 1};
                 } else if (otherAttackType=== 'ranged') {
-                    return {accuracy: 100, damageModifier: 1.1};
+                    return {accuracy: 99, damageModifier: 1.1};
                 } else {
                     return {accuracy: 80, damageModifier: 0.9};
                 }
@@ -76,11 +76,11 @@ const app = Vue.createApp({
                 } else if (otherAttackType === 'ranged') {
                     return {accuracy: 90, damageModifier: 1};
                 } else {
-                    return {accuracy: 100, damageModifier: 1.1};
+                    return {accuracy: 99, damageModifier: 1.1};
                 }
             } else {
                 if (otherAttackType === 'melee') {
-                    return {accuracy: 100, damageModifier: 1.1};
+                    return {accuracy: 99, damageModifier: 1.1};
                 } else if (otherAttackType === 'ranged') {
                     return {accuracy: 80, damageModifier: 0.9};
                 } else {

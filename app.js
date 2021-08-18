@@ -137,12 +137,11 @@ const app = Vue.createApp({
                             }
                         }
                     }
-    
-                    this.currentMonster.monsterAttackStyleOrder.push(this.currentMonster.monsterAttackStyleOrder.shift()) //rotate array
-                    this.currentMonster.monsterAttackStyle = this.currentMonster.monsterAttackStyleOrder[this.currentMonster.monsterAttackStyleOrder.length - 1]
                 } else {
                     this.addLog(this.currentMonster.name, 'miss', `attempted ${this.currentMonster.monsterAttackStyle} attacks and missed`)
                 }
+                this.currentMonster.monsterAttackStyleOrder.push(this.currentMonster.monsterAttackStyleOrder.shift()) //rotate array
+                this.currentMonster.monsterAttackStyle = this.currentMonster.monsterAttackStyleOrder[this.currentMonster.monsterAttackStyleOrder.length - 1]
             }
         },
         attackMonster(type) {
@@ -232,6 +231,11 @@ const app = Vue.createApp({
             this.dracula.strength = this.dracula.baseStrength;
             this.barbarian.strength = this.barbarian.baseStrength;
             this.rex.strength = this.rex.baseStrength;
+            this.hero.accuracy = 96;
+            this.goblin.accuracy = 90;
+            this.barbarian.accuracy = 85;
+            this.dracula.accuracy = 92.5;
+            this.rex.accuracy = 20;
             this.specialAttackCounter = 0;
             this.usedSpecialAttack = false;
             this.currentMonster.monsterAttackStyle = '';
@@ -320,7 +324,7 @@ const app = Vue.createApp({
             return round(round(Math.ceil(this.currentMonster.strength * 2) * 1.5) * 2.5)
         },
         heroMaxHeal() {
-            return round(Math.ceil((this.hero.maxHp - this.hero.heroHp) * 0.5))
+            return round((this.hero.maxHp - this.hero.heroHp) * 0.5)
         },
         heroMaxHit() {
             return this.specialAttackOnCooldown ? round(this.hero.strength * 2.5) : round(Math.max(this.specialAttackMaxHit, this.hero.strength * 2.5)) 
